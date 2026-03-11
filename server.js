@@ -31,6 +31,10 @@ app.get('/test-db', async (req, res) => {
     }
 });
 
+// Import and use the recipe routes
+const recipeRoutes = require('./src/routes/recipe.routes');
+app.use('/api/recipes', recipeRoutes);
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });

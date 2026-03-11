@@ -38,7 +38,55 @@ const createRecipe = async (req, res) => {
     }
 };
 
+// Update: Modify an existing recipe (PUT)
+const updateRecipe = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, category, ingredients, directions } = req.body;
+
+        const updateQuery = `
+            UPDATE recipes 
+            SET title = $1, category = $2, ingredients = $3, directions = $4
+            WHERE id = $5 
+            RETURNING *;
+        `;
+
+        const result = await pool.query(updateQuery, [title, category, ingredients, directions, id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Recipe not found' });
+        }
+
+        res.status(200).json(result.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: 'Server error while updating recipe' });
+    }
+};
+
+// Delete: Remove a recipe (DELETE)
+const deleteRecipe = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deleteQuery = 'DELETE FROM recipes WHERE id = $1 RETURNING *';
+        const result = await pool.query(deleteQuery, [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Recipe not found' });
+        }
+
+        res.status(200).json({ message: 'Recipe successfully deleted', deletedRecipe: result.rows[0] });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: 'Server error while deleting recipe' });
+    }
+};
+
+// Don't forget to export the new functions!
 module.exports = {
     getAllRecipes,
-    createRecipe
+    createRecipe,
+    updateRecipe,
+    deleteRecipe
 };

@@ -13,8 +13,15 @@ app.get('/', (req, res) => {
     res.json({ message: 'Welcome to the Foods & Recipes API!' });
 });
 
+
+// Import and use the recipe routes
+const recipeRoutes = require('./src/routes/recipe.routes');
+app.use('/api/recipes', recipeRoutes);
+
+const errorHandler = require('./src/middlewares/errorHandler');
+
 // A route to test our PostgreSQL connection
-app.get('/test-db', async (req, res) => {
+app.get('/test-db', async (req, res, next) => {
     try {
         const result = await pool.query('SELECT NOW()');
         res.status(200).json({ 
@@ -23,17 +30,12 @@ app.get('/test-db', async (req, res) => {
             serverTime: result.rows[0].now 
         });
     } catch (err) {
-        console.error('Database connection error:', err);
-        res.status(500).json({ 
-            success: false, 
-            error: 'Failed to connect to the database. Check your .env credentials.' 
-        });
+        // Pass the error to your new centralized handler using next()
+        next(err);
     }
 });
 
-// Import and use the recipe routes
-const recipeRoutes = require('./src/routes/recipe.routes');
-app.use('/api/recipes', recipeRoutes);
+app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

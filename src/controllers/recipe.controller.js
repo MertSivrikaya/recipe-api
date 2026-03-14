@@ -17,8 +17,7 @@ const getAllRecipes = async (req, res) => {
         const recipes = await RecipeModel.getAll();
         res.status(200).json(recipes);
     } catch (err) {
-        console.error(err.message);
-        res.status(500).json({ error: 'Server error while fetching recipes' });
+        next(err); // Pass the error to the centralized error handler
     }
 };
 
@@ -34,8 +33,7 @@ const createRecipe = async (req, res) => {
         const newRecipe = await RecipeModel.create(title, category, ingredients, directions);
         res.status(201).json(newRecipe);
     } catch (err) {
-        console.error(err.message);
-        res.status(500).json({ error: 'Server error while creating recipe' });
+        next(err); // Pass the error to the centralized error handler
     }
 };
 
@@ -53,8 +51,7 @@ const updateRecipe = async (req, res) => {
 
         res.status(200).json(updatedRecipe);
     } catch (err) {
-        console.error(err.message);
-        res.status(500).json({ error: 'Server error while updating recipe' });
+        next(err); // Pass the error to the centralized error handler
     }
 };
 
@@ -70,8 +67,7 @@ const deleteRecipe = async (req, res) => {
 
         res.status(200).json({ message: 'Recipe successfully deleted', deletedRecipe });
     } catch (err) {
-        console.error(err.message);
-        res.status(500).json({ error: 'Server error while deleting recipe' });
+        next(err); // Pass the error to the centralized error handler
     }
 };
 

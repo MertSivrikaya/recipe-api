@@ -6,8 +6,22 @@ require('dotenv').config();
 
 const pool = require('./src/config/db.config');
 
+const cors = require('cors');
+
 const app = express();
 const port = process.env.PORT || 3000;
+
+/* 
+    CORS stands for Cross-Origin Resource Sharing. It is a strict security mechanism built into all modern web browsers.
+    By default, if we have a frontend website running on http://localhost:8080 and it tries to fetch recipes from our API running on http://localhost:3000, 
+    the web browser will panic and block the request. It thinks a malicious website is trying to secretly steal data from our server.
+
+    "We used app.use(cors()) to globally allow cross-origin requests for prototyping. 
+    In a production environment, we would pass a configuration object to strictly limit access to 
+    only our official frontend domain."
+*/
+// Enable CORS for all routes (allows browsers to communicate with your API)
+app.use(cors());
 
 // Middleware to automatically parse incoming JSON requests
 // In Express, when a request comes in, it goes through a series of middleware functions before reaching the route handler.

@@ -19,6 +19,10 @@ app.get('/', (req, res) => {
     res.json({ message: 'Welcome to the Foods & Recipes API!' });
 });
 
+// The Authentication Route
+// This provides the URL endpoint for clients to submit their credentials and receive a JWT.
+const authController = require('./src/controllers/auth.controller');
+app.post('/api/login', authController.login);
 
 // Import and use the recipe routes
 // "If a request URL starts with /api/recipes, then use the recipeRoutes router to handle it."

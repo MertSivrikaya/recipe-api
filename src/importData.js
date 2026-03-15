@@ -19,6 +19,10 @@ const insertRecordQuery = `
 
 async function importCSV() {
     try {
+        // --- NEW: Wipe out the old table and all the "Unknown" mistakes so we start fresh ---
+        await pool.query('DROP TABLE IF EXISTS recipes');
+        console.log('Old table dropped.');
+
         // 1. Create the table
         await pool.query(createTableQuery);
         console.log('Table "recipes" is ready.');
@@ -36,11 +40,11 @@ async function importCSV() {
             }
 
             try {
-                // Match the exact Kaggle CSV headers
-                const title = row['Title'] || 'Unknown Recipe';
-                const category = row['Category'] || 'Uncategorized';
-                const ingredients = row['Ingredients'] || '[]';
-                const directions = row['Directions'] || '[]';
+                // --- FIXED: Match the exact CSV headers (case-sensitive!) ---
+                const title = row['recipe_title'] || 'Unknown Recipe';
+                const category = row['category'] || 'Uncategorized';
+                const ingredients = row['ingredients'] || '[]';
+                const directions = row['directions'] || '[]';
 
                 await pool.query(insertRecordQuery, [title, category, ingredients, directions]);
                 count++;

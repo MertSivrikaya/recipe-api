@@ -58,6 +58,12 @@ app.get('/test-db', async (req, res, next) => {
     }
 });
 
+// To force Express to return a clean JSON response for any URL that doesn't exist, 
+// we just need to add a "catch-all" route at the very end of our routing pipeline.
+app.use((req, res, next) => {
+    res.status(404).json({ error: 'Endpoint not found' });
+});
+
 // If any of the routes above throw an error and call next(err), 
 // Express skips everything else and drops the error right into this handler, 
 // ensuring the user gets a formatted JSON response instead of crashing the server.

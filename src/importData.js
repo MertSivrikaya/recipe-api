@@ -21,7 +21,7 @@ async function importCSV() {
     try {
         // 1. Create the table
         await pool.query(createTableQuery);
-        console.log('✅ Table "recipes" is ready.');
+        console.log('Table "recipes" is ready.');
 
         let count = 0;
         const limit = 500; // Safely limit to 500 records for testing
@@ -49,11 +49,11 @@ async function importCSV() {
             }
         }
         
-        console.log(`🎉 Import complete! Successfully inserted ${count} records.`);
+        console.log(`Import complete! Successfully inserted ${count} records.`);
         process.exit(0); // Exit the script successfully
 
     } catch (err) {
-        console.error('❌ Error setting up database:', err);
+        console.error('Error setting up database:', err);
         process.exit(1);
     }
 }

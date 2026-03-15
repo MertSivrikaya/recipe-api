@@ -7,7 +7,6 @@ const pool = require('../config/db.config');
     and the routes will call the controller methods to handle HTTP requests.
 */
 
-
 const RecipeModel = {
     // Get all recipes (with a limit for performance)
     getAll: async () => {

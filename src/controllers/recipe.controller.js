@@ -1,4 +1,3 @@
-
 /*
     Using a layered system architecture, the routing layer forwards incoming HTTP requests to the controller layer,
     which manages the HTTP logic. The controller layer calls the model layer to perform database operations, 

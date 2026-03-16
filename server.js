@@ -6,6 +6,15 @@ require('dotenv').config();
 
 const pool = require('./src/config/db.config');
 
+// Test the database connection on startup
+pool.query('SELECT 1')
+  .then(() => console.log('PostgreSQL Database connected successfully.'))
+  .catch(err => {
+      console.error('DATABASE CONNECTION FAILED!');
+      console.error('Please ensure PostgreSQL is installed, running, and your .env credentials are correct.');
+      console.error(`Error details: ${err.message}`);
+  });
+
 const cors = require('cors');
 
 const app = express();
@@ -79,21 +88,6 @@ app.use('/api/auth', authRoutes);
 // "If a request URL starts with /api/recipes, then use the recipeRoutes router to handle it."
 const recipeRoutes = require('./src/routes/recipe.routes');
 app.use('/api/recipes', recipeRoutes);
-
-// A route to test our PostgreSQL connection
-app.get('/test-db', async (req, res, next) => {
-    try {
-        const result = await pool.query('SELECT NOW()');
-        res.status(200).json({ 
-            success: true, 
-            message: 'Database connected successfully!',
-            serverTime: result.rows[0].now 
-        });
-    } catch (err) {
-        // Pass the error to your new centralized handler using next()
-        next(err);
-    }
-});
 
 // To force Express to return a clean JSON response for any URL that doesn't exist, 
 // we just need to add a "catch-all" route at the very end of our routing pipeline.

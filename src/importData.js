@@ -19,18 +19,17 @@ const insertRecordQuery = `
 
 async function importCSV() {
     try {
-        // --- NEW: Wipe out the old table and all the "Unknown" mistakes so we start fresh ---
         await pool.query('DROP TABLE IF EXISTS recipes');
         console.log('Old table dropped.');
 
-        // 1. Create the table
+        // Create the table
         await pool.query(createTableQuery);
         console.log('Table "recipes" is ready.');
 
         let count = 0;
         const limit = 500; // Safely limit to 500 records for testing
 
-        // 2. Read the CSV as an asynchronous stream
+        // Read the CSV as an asynchronous stream
         const stream = fs.createReadStream('dataset.csv').pipe(csv());
 
         for await (const row of stream) {
@@ -40,7 +39,6 @@ async function importCSV() {
             }
 
             try {
-                // --- FIXED: Match the exact CSV headers (case-sensitive!) ---
                 const title = row['recipe_title'] || 'Unknown Recipe';
                 const category = row['category'] || 'Uncategorized';
                 const ingredients = row['ingredients'] || '[]';

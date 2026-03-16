@@ -11,6 +11,43 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
+// --- Swagger Configuration ---
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'Foods & Recipes API',
+            version: '1.0.0',
+            description: 'A RESTful API for managing recipes, featuring JWT authentication and PostgreSQL integration.',
+        },
+        servers: [
+            {
+                url: 'http://localhost:3000',
+                description: 'Local Development Server'
+            },
+        ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                }
+            }
+        }
+    },
+    // This tells Swagger to look inside your routes folder to find the documentation comments
+    apis: ['./src/routes/*.js'], 
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+// This mounts the interactive documentation page at http://localhost:3000/api-docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// -----------------------------
+
 /* 
     CORS stands for Cross-Origin Resource Sharing. It is a strict security mechanism built into all modern web browsers.
     By default, if we have a frontend website running on http://localhost:8080 and it tries to fetch recipes from our API running on http://localhost:3000, 

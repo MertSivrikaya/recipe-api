@@ -30,7 +30,15 @@ async function importCSV() {
         const limit = 500; // Safely limit to 500 records for testing
 
         // Read the CSV as an asynchronous stream
-        const stream = fs.createReadStream('dataset.csv').pipe(csv());
+        const fullDatasetPath = 'dataset.csv';
+        const sampleDatasetPath = 'sample_dataset.csv';
+
+        // Dynamically determine which file to use
+        const fileToUse = fs.existsSync(fullDatasetPath) ? fullDatasetPath : sampleDatasetPath;
+        console.log(`Starting database import using: ${fileToUse}`);
+
+        // Update your stream to use the dynamic variable instead of a hardcoded string
+        const stream = fs.createReadStream(fileToUse).pipe(csv());
 
         for await (const row of stream) {
             // Stop importing once we hit the limit
